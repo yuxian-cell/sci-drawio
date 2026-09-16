@@ -593,6 +593,14 @@ def build_xml(spec, node_geo, cont_geo, themes):
                c.get("fill", theme["container"]["fill"]),
                c.get("stroke", theme["container"]["stroke"]),
                c.get("fontColor", theme["container"]["font"])))
+        if c.get("fontSize"):
+            style += "fontSize=%s;" % c["fontSize"]
+        if c.get("fontStyle"):
+            style += "fontStyle=%s;" % c["fontStyle"]
+        if c.get("align"):
+            style += "align=%s;" % c["align"]
+        if c.get("verticalAlign"):
+            style += "verticalAlign=%s;" % c["verticalAlign"]
         cid = c["id"]
         out.append('<mxCell id="%s" value="%s" style="%s" vertex="1" parent="%s">'
                    % (esc_attr(cid), esc_attr(c.get("label", "")), style,
@@ -1146,12 +1154,21 @@ def _live_save_image(result, path):
 
 def _container_style(c, theme):
     """Live-mode container style, matching build_xml (swimlane with title bar)."""
-    return (c.get("style") or
-            "swimlane;startSize=%d;fillColor=%s;strokeColor=%s;fontColor=%s;html=1;"
-            % (int(c.get("startSize", 30)),
-               c.get("fill", theme["container"]["fill"]),
-               c.get("stroke", theme["container"]["stroke"]),
-               c.get("fontColor", theme["container"]["font"])))
+    style = c.get("style") or (
+        "swimlane;startSize=%d;fillColor=%s;strokeColor=%s;fontColor=%s;html=1;"
+        % (int(c.get("startSize", 30)),
+           c.get("fill", theme["container"]["fill"]),
+           c.get("stroke", theme["container"]["stroke"]),
+           c.get("fontColor", theme["container"]["font"])))
+    if c.get("fontSize"):
+        style += "fontSize=%s;" % c["fontSize"]
+    if c.get("fontStyle"):
+        style += "fontStyle=%s;" % c["fontStyle"]
+    if c.get("align"):
+        style += "align=%s;" % c["align"]
+    if c.get("verticalAlign"):
+        style += "verticalAlign=%s;" % c["verticalAlign"]
+    return style
 
 
 def _spec_ops(spec, themes, node_geo, cont_geo):
