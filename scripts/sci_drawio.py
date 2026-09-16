@@ -542,8 +542,9 @@ def build_xml(spec, node_geo, cont_geo, themes):
     bbox_w = max_x - min_x
     bbox_h = max_y - min_y
 
-    # title
-    if title:
+    # title (skip auto title when nodes already define a node with id="title")
+    has_title_node = any(n.get("id") == "title" for n in nodes)
+    if title and not has_title_node:
         tw = max(400, bbox_w)
         cells.insert(0, ("title", title, {"x": min_x, "y": 10, "w": tw, "h": 40}))
 
@@ -1176,7 +1177,8 @@ def _spec_ops(spec, themes, node_geo, cont_geo):
     gy1 = max([g["y"] + g["h"] for g in all_gs] or [600])
 
     title = spec.get("title")
-    if title:
+    has_title_node = any(n.get("id") == "title" for n in nodes)
+    if title and not has_title_node:
         ops.append({
             "type": "shape", "id": "title", "shape": "text", "label": title,
             "x": gx0, "y": max(10, gy0 - 55), "width": max(400, gx1 - gx0), "height": 40,
