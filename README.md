@@ -1,5 +1,7 @@
 # sci-drawio — 科研图自动绘制 Skill for draw.io
 
+[![CI](https://github.com/yuxian-cell/sci-drawio/actions/workflows/ci.yml/badge.svg)](https://github.com/yuxian-cell/sci-drawio/actions)
+
 一个让 AI Agent 自动绘制**科研示意图 / 信号通路 / 机制图 / 实验流程图 / 技术路线图**的 Skill（技能）。
 
 ```text
@@ -82,7 +84,7 @@ python scripts/install.py --target <你的技能目录>
   | `association` 结合 | 圆点 ● |
   | `production` 生成/转录 | 实心三角 ► |
 - **自动布局**：最长路径分层 + 行内排序；支持容器（swimlane）内子布局与自动扩尺寸；**支持循环（反馈回路）**——回边自动跳过分层并渲染为上溯曲线。
-- **3 套主题**（nature/minimal/cell）+ 自定义主题 JSON；图例与注释自动生成。
+- **5 套主题**（nature/minimal/cell/paper + **colorblind** 色盲安全预设，适合投稿）+ 自定义主题 JSON；图例与注释自动生成。
 - **三条交付通道**：live 实时绘制 / MCP 快速打开 / 桌面版 CLI + `#create=` URL（`url-verify` 可回读校验）。
 
 ## 架构说明（为什么这样设计）

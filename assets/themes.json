@@ -11,5 +11,18 @@
     "container": {"fill": "#F5F7F8", "stroke": "#B0BEC5", "font": "#263238"},
     "edge": "#37474F",
     "edge_alt": "#90A4AE"
+  },
+  "colorblind": {
+    "bg": "#FFFFFF",
+    "default": {"fill": "#0072B2", "stroke": "#005086", "font": "#FFFFFF"},
+    "alt":     {"fill": "#E69F00", "stroke": "#A87400", "font": "#111111"},
+    "alt2":    {"fill": "#009E73", "stroke": "#006B4E", "font": "#FFFFFF"},
+    "alt3":    {"fill": "#D55E00", "stroke": "#8F3D00", "font": "#FFFFFF"},
+    "alt4":    {"fill": "#CC79A7", "stroke": "#8A4E6D", "font": "#111111"},
+    "alt5":    {"fill": "#F0E442", "stroke": "#B0A61A", "font": "#4A3A00"},
+    "muted":   {"fill": "#EDEDED", "stroke": "#999999", "font": "#333333"},
+    "container": {"fill": "#F7F7F7", "stroke": "#999999", "font": "#333333"},
+    "edge": "#333333",
+    "edge_alt": "#A6A6A6"
   }
 }

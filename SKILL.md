@@ -104,7 +104,7 @@ python scripts/sci_drawio.py url-verify out.url -o decoded.xml            # 回�
 ## 五、规则与限制
 
 - 形状（12 种已实测）：`rect`、`rounded`、`ellipse`、`double_ellipse`、`rhombus`、`cylinder`、`parallelogram`、`hexagon`、`process`、`document`、`cloud`、`actor`、`note`、`text`、`swimlane`（容器）。
-- 主题：`nature`（类 Cell 四色系，默认）、`minimal`（黑白灰，适合投稿线图）、`cell`（类似 Excel 调色盘）。可用 `assets/themes.json` 追加自定义主题。
+- 主题：`nature`（类 Cell 四色系，默认）、`minimal`（黑白灰，适合投稿线图）、`cell`（类似 Excel 调色盘）、`paper`（材料蓝灰）、`colorblind`（Okabe-Ito 色盲安全配色，**投稿推荐**，红绿/蓝紫均可区分）。可用 `assets/themes.json` 追加自定义主题。
 - 边样式：`orthogonal`（默认，直角）、`curved`、`straight`；虚线用 `"dashed": true`；raw 高级用法见 schema 参考。
 - 容器（swimlane）内子节点坐标相对容器；容器无显式宽高时自动扩到包住子节点。live 模式同样支持容器（swimlane 嵌套 + 容器内边/跨容器边）。
 - 图例与注释由 spec 声明生成，不要手工在 XML 里加。

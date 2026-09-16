@@ -1,0 +1,41 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Python syntax check
+        run: python -m py_compile scripts/sci_drawio.py scripts/install.py
+
+      - name: Node syntax check (live MCP server)
+        run: node --check scripts/live/live-server.mjs && node --check scripts/live/drawio-path.mjs
+
+      - name: Themes file is valid JSON (with colorblind preset)
+        run: python -c "import json; json.load(open('assets/themes.json', encoding='utf-8-sig')); print('themes.json OK')"
+
+      - name: Build samples (spec -> .drawio, build embeds validation)
+        run: |
+          python scripts/sci_drawio.py build samples/signaling-pathway.json -o /tmp/sp.drawio
+          python scripts/sci_drawio.py build samples/experimental-flow.json -o /tmp/ef.drawio
+          python scripts/sci_drawio.py build samples/mechanism-compartments.json -o /tmp/mc.drawio
+
+      - name: Validate shipped .drawio files
+        run: |
+          python scripts/sci_drawio.py validate samples/signaling-pathway.drawio
+          python scripts/sci_drawio.py validate samples/experimental-flow.drawio
+          python scripts/sci_drawio.py validate samples/mechanism-compartments.drawio
