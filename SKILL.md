@@ -110,7 +110,27 @@ python scripts/sci_drawio.py url-verify out.url -o decoded.xml            # 回�
 - 图例与注释由 spec 声明生成，不要手工在 XML 里加。
 - draw.io 未安装时 `open/export` 会报错并提示设置 `DRAWIO_PATH` 环境变量；`live` 需要 Node.js 22+（draw.io 桌面版路径自动探测）。
 
-## 六、参考文件
+## 六、reference-replicate 复刻工作流（读图→spec→live→截图→自检→交付）
+
+用户给出**参考图（含可选数据源文本）要求百分百复刻**时，用本工作流。核心理念：**模型是视觉引擎，脚本提供确定性辅助**——模型直接"看"参考图输出精确坐标 spec（不依赖 OCR），live 画出后在真实画布上截图，与参考图并排自检，发现问题修正重画，循环到满意。
+
+```bash
+# 1. 初始化任务（记录参考图/数据源/阶段状态）
+python scripts/sci_drawio.py ref-replicate start --ref ref.png --name task [--datasource data.txt] [--workdir .]
+# 2. 阶段推进/查询（read→spec→build→live→shot→selfcheck→fix→deliver）
+python scripts/sci_drawio.py ref-replicate status [--workdir .]
+python scripts/sci_drawio.py ref-replicate next [--to stage] [--workdir .]
+# 3. 干净画布截图（自动隐藏 UI 面板+fit 画布+截图+恢复；带重试）
+python scripts/sci_drawio.py ref-replicate shot [-o shot.png] [--workdir .]
+# 4. 自检对比（参考图|当前画布 并排同高拼图 + JSON 报告）
+python scripts/sci_drawio.py ref-replicate selfcheck [--workdir .]
+# 5. 交付摘要
+python scripts/sci_drawio.py ref-replicate report [--workdir .]
+```
+
+工作流规范与模型自检清单见 `references/replicate-workflow.md`——**执行复刻前必读**。中间步骤（build / live draw / export）复用第三节、第四节的命令。`shot` 截的是**纯画布**（隐藏便笺本/格式面板/菜单后 fit 截图，随后恢复 UI 与原缩放），比普通窗口截图更适合与参考图对比；若窗口被遮挡/最小化导致截图超时，命令会自动重试并提示恢复窗口。
+
+## 七、参考文件
 
 - `references/diagram-spec-schema.md` — **必读**：全部字段定义、示例 spec、布局规则、箭头/形状/主题速查。
 - `references/scientific-style-guide.md` — 科研图视觉规范（配色、线宽、字体、常见图类型画法、**期刊导出参数**）。

@@ -114,6 +114,11 @@ const tools = [
     inputSchema: { type: "object", properties: {}, additionalProperties: false },
   },
   {
+    name: "drawio_live_screenshot_clean",
+    description: "Capture the diagram canvas alone: UI panels (sidebar/format/menu/toolbar/tabs/status) are temporarily hidden, the view is fitted to the diagram, a screenshot is taken, then the UI and previous zoom are restored. For self-checking a drawing against a reference image without UI noise.",
+    inputSchema: { type: "object", properties: {}, additionalProperties: false },
+  },
+  {
     name: "drawio_live_clear",
     description: "Remove the current page's drawable cells in the visible editor to start a blank live drawing. The change is visible and undoable in draw.io.",
     inputSchema: {
@@ -2015,6 +2020,38 @@ async function handleTool(name, args = {}) {
       return { value: await getCapabilities(args) };
     case "drawio_live_screenshot":
       return { value: { ...(await liveStatus()), captured: true }, imageData: await captureScreenshot() };
+    case "drawio_live_screenshot_clean": {
+      const probe = await graphEval(`
+        const all = Array.from(document.querySelectorAll('div'));
+        const panels = all.map(el => el.className).filter(c => typeof c === 'string' && /ge(Sidebar|Format|Menu|Tool|Tab|Status|Footer|Hint|Dialog|Page|Tab)/i.test(c)).slice(0, 40);
+        return { panels };
+      `);
+      await graphEval(`
+        const selectors = ['.geSidebar','.geSidebarContainer','.geFormatContainer','.geMenubarContainer','.geToolbarContainer','.geTabContainer','.geStatusContainer','.geFooterContainer','.geHintContainer','.geDialog','.geFormatPanel','.geSidebarContainer'];
+        const els = selectors.map(s => document.querySelectorAll(s)).flatMap(nl => Array.from(nl)).filter(Boolean);
+        const state = { displays: els.map(el => ({ el, display: el.style.display })) };
+        els.forEach(el => { el.style.display = 'none'; });
+        state.scale = graph.view.scale;
+        state.tx = graph.view.translate.x;
+        state.ty = graph.view.translate.y;
+        window.__rr_shot_state = state;
+        graph.fit();
+        graph.center();
+        return { hidden: els.length };
+      `);
+      await sleep(250); // let layout settle after hiding panels
+      const imageData = await captureScreenshot();
+      await graphEval(`
+        const state = window.__rr_shot_state;
+        if (state) {
+          state.displays.forEach(({ el, display }) => { el.style.display = display; });
+          graph.view.scaleAndTranslate(state.scale, state.tx, state.ty);
+          delete window.__rr_shot_state;
+        }
+        return !!state;
+      `);
+      return { value: { captured: true, clean: true, panels: probe.panels }, imageData };
+    }
     case "drawio_live_clear": {
       if (args.confirm !== true) throw new Error("confirm=true is required to clear the current page.");
       const value = await graphEval(`

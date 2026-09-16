@@ -18,6 +18,9 @@ Subcommands:
   export    file.drawio -f png -o out.png      导出 PNG/SVG/PDF 预览
   url       file.drawio                        生成可在浏览器打开的 draw.io 链接
   inspect   file.drawio                        打印节点/连线/容器统计
+  live      draw/status/screenshot/save ...    在可见 draw.io 画布上逐步绘制
+  ref-replicate  start/status/next/shot/selfcheck/report
+                                               复刻工作流: 读图→spec→live→截图→自检→交付
 """
 
 import argparse
@@ -1351,6 +1354,243 @@ def cmd_live(args):
 
 
 # ---------------------------------------------------------------------------
+# reference-replicate workflow: 读图→spec→live→截图→自检→交付
+#
+# The agent (LLM) is the vision engine: it reads the reference image visually
+# (no OCR), writes a manual-layout spec, live-draws it, screenshots the canvas,
+# and self-checks against the reference via a side-by-side board. This module
+# only provides the deterministic helpers: stage tracking, retryable screenshots
+# and the side-by-side selfcheck board.
+# ---------------------------------------------------------------------------
+
+RR_STAGES = ["read", "spec", "build", "live", "shot", "selfcheck", "fix", "deliver"]
+
+RR_GUIDE = """\
+reference-replicate workflow (模型按以下阶段执行; 每个阶段用 ref-replicate next 推进):
+
+  1 read      视觉读参考图: 放大看区域/容器/标注线/文字, 坐标以参考图像素为准, 不依赖 OCR
+  2 spec      视觉直出坐标 → 写 {name}.json (layout="manual", x/y/w/h=参考图像素)
+  3 build     sci_drawio.py build {spec} -o {drawio}
+  4 live      sci_drawio.py live draw {spec} --step-ms 90 --save {drawio}
+  5 shot      sci_drawio.py ref-replicate shot          (带重试截取当前画布)
+  6 selfcheck sci_drawio.py ref-replicate selfcheck     (生成 参考图|当前画布 并排对比图)
+  7 fix       对照 selfcheck 图发现问题 → 改 spec → 回到 3; 满意则 ref-replicate next --to deliver
+  8 deliver   ref-replicate report 后交付 .drawio + 预览 PNG
+
+自检清单: ①模块/容器边界与色带位置 ②全部文字(含竖排/合并行) ③标注线与箭头 ④字号/行距/间距
+"""
+
+
+def _rr_state_path(workdir):
+    return os.path.join(workdir, ".ref-replicate.json")
+
+
+def _rr_load_state(workdir):
+    p = _rr_state_path(workdir)
+    if os.path.exists(p):
+        with open(p, "r", encoding="utf-8-sig") as f:
+            return json.load(f)
+    return None
+
+
+def _rr_save_state(state):
+    with open(_rr_state_path(state["workdir"]), "w", encoding="utf-8") as f:
+        json.dump(state, f, ensure_ascii=False, indent=2)
+
+
+def _rr_take_screenshot(client, output, retries=3):
+    """Clean-canvas screenshot (drawio_live_screenshot_clean) with retries; falls
+    back to the plain window screenshot. CDP Page.captureScreenshot can time out
+    when the window is occluded/minimized — a retry after a short pause usually
+    succeeds once the window is back."""
+    import time
+    last = "unknown error"
+    for i in range(max(1, retries)):
+        try:
+            result = _live_result(client, "drawio_live_screenshot_clean")
+            if _live_save_image(result, output) and os.path.exists(output) and os.path.getsize(output) > 0:
+                return True, "attempt %d (clean)" % (i + 1)
+            # fallback: plain window screenshot
+            result = _live_result(client, "drawio_live_screenshot")
+            if _live_save_image(result, output) and os.path.exists(output) and os.path.getsize(output) > 0:
+                return True, "attempt %d (window)" % (i + 1)
+            return True, "attempt %d (no image payload)" % (i + 1)
+        except SystemExit as ex:
+            last = str(ex)
+            if i < retries - 1:
+                time.sleep(2)
+    return False, last
+
+
+def _img_size(path):
+    try:
+        from PIL import Image
+        with Image.open(path) as im:
+            return im.size
+    except Exception:
+        return None
+
+
+def _rr_selfcheck(ref_path, shot_path, out_path):
+    """Build a side-by-side board (reference | live canvas) at equal height,
+    plus a JSON report with sizes and scale factors. Falls back to an HTML
+    board when PIL is unavailable."""
+    ref_size = _img_size(ref_path)
+    shot_size = _img_size(shot_path)
+    board = None
+    try:
+        from PIL import Image
+        ref_im = Image.open(ref_path).convert("RGB")
+        shot_im = Image.open(shot_path).convert("RGB")
+        H = 1500
+        rw = max(1, int(ref_im.width * H / ref_im.height))
+        sw = max(1, int(shot_im.width * H / shot_im.height))
+        gap = 48
+        pad = 20
+        canvas = Image.new("RGB", (pad * 2 + rw + gap + sw, H + pad * 2), "white")
+        canvas.paste(ref_im.resize((rw, H), Image.LANCZOS), (pad, pad))
+        canvas.paste(shot_im.resize((sw, H), Image.LANCZOS), (pad + rw + gap, pad))
+        for x in range(pad + rw + gap - 3, pad + rw + gap + 3):
+            for y in range(pad, pad + H):
+                canvas.putpixel((x, y), (120, 120, 120))
+        canvas.save(out_path)
+        board = out_path
+        board_format = "png-side-by-side"
+    except Exception:
+        board_format = "html-side-by-side"
+        html_path = os.path.splitext(out_path)[0] + ".html"
+        rpath = os.path.basename(ref_path)
+        spath = os.path.basename(shot_path)
+        html = ('<!doctype html><html><head><meta charset="utf-8">'
+                '<title>reference-replicate selfcheck</title></head>'
+                '<body style="margin:0;background:#fff;font-family:sans-serif;">'
+                '<div style="display:flex;height:100vh;">'
+                '<div style="flex:1;border-right:6px solid #888;overflow:hidden;">'
+                '<img src="%s" style="width:100%%;height:100%%;object-fit:contain;"></div>'
+                '<div style="flex:1;overflow:hidden;">'
+                '<img src="%s" style="width:100%%;height:100%%;object-fit:contain;"></div>'
+                '</div></body></html>') % (rpath, spath)
+        with open(html_path, "w", encoding="utf-8") as f:
+            f.write(html)
+        board = html_path
+    return {
+        "ref": {"path": ref_path, "size": ref_size},
+        "shot": {"path": shot_path, "size": shot_size},
+        "board": board,
+        "board_format": board_format,
+    }
+
+
+def cmd_ref_replicate(args):
+    action = args.action
+    workdir = os.path.abspath(getattr(args, "workdir", "."))
+    if action == "start":
+        if not args.ref or not os.path.exists(args.ref):
+            die("--ref reference image is required")
+        os.makedirs(workdir, exist_ok=True)
+        name = args.name or os.path.splitext(os.path.basename(args.ref))[0]
+        state = {
+            "name": name,
+            "ref": os.path.abspath(args.ref),
+            "datasource": os.path.abspath(args.datasource) if getattr(args, "datasource", None) else None,
+            "workdir": workdir,
+            "current": "read",
+            "done": {},
+            "fix_round": 0,
+            "artifacts": {
+                "spec": os.path.join(workdir, name + ".json"),
+                "drawio": os.path.join(workdir, name + ".drawio"),
+                "shot": os.path.join(workdir, name + "-live.png"),
+                "selfcheck": os.path.join(workdir, name + "-selfcheck.png"),
+                "report": os.path.join(workdir, name + "-report.json"),
+            },
+        }
+        _rr_save_state(state)
+        print("reference-replicate task initialized")
+        print("  ref        : %s" % state["ref"])
+        if state["datasource"]:
+            print("  datasource : %s" % state["datasource"])
+        print("  workdir    : %s" % workdir)
+        print("  spec       : %s" % state["artifacts"]["spec"])
+        print()
+        print(RR_GUIDE.format(name=name, spec=os.path.basename(state["artifacts"]["spec"]),
+                              drawio=os.path.basename(state["artifacts"]["drawio"])))
+        return
+    state = _rr_load_state(workdir)
+    if not state:
+        die("no reference-replicate task in %s (run 'ref-replicate start' first)" % workdir)
+    if action == "status":
+        print("task      : %s" % state["name"])
+        print("current   : %s" % state["current"])
+        print("done      : %s" % (", ".join(k for k, v in state["done"].items() if v) or "-"))
+        print("fix_round : %d" % state["fix_round"])
+        print("artifacts :")
+        for k, v in state["artifacts"].items():
+            flag = "ok" if os.path.exists(v) else "  "
+            print("  [%s] %-10s %s" % (flag, k, v))
+        return
+    if action == "next":
+        if getattr(args, "to", None):
+            if args.to not in RR_STAGES:
+                die("unknown stage '%s'; stages: %s" % (args.to, " ".join(RR_STAGES)))
+            state["done"][state["current"]] = True
+            state["current"] = args.to
+        else:
+            idx = RR_STAGES.index(state["current"])
+            state["done"][state["current"]] = True
+            state["current"] = RR_STAGES[min(idx + 1, len(RR_STAGES) - 1)]
+        if state["current"] == "fix":
+            state["fix_round"] += 1
+        _rr_save_state(state)
+        print("stage advanced -> %s" % state["current"])
+        if state["current"] == "fix":
+            print("自检发现问题: 改 spec 后重跑 build → live draw → shot → selfcheck; 满意则 next --to deliver")
+        return
+    if action == "shot":
+        out = args.output or state["artifacts"]["shot"]
+        env = dict(os.environ)
+        if not env.get("DRAWIO_PATH"):
+            exe = find_drawio()
+            if exe:
+                env["DRAWIO_PATH"] = exe
+        client = McpClient(_live_server_argv(), env=env)
+        try:
+            client.initialize()
+            ok, msg = _rr_take_screenshot(client, out, retries=args.retries)
+            if not ok:
+                eprint("screenshot failed after %d attempts: %s" % (args.retries, msg))
+                eprint("hint: 把 draw.io 窗口恢复前台(取消最小化/遮挡)后再试 ref-replicate shot")
+                sys.exit(1)
+            print("screenshot saved to %s (%s)" % (out, msg))
+        finally:
+            client.close()
+        return
+    if action == "selfcheck":
+        ref = args.ref or state["ref"]
+        shot = args.shot or state["artifacts"]["shot"]
+        out = args.output or state["artifacts"]["selfcheck"]
+        if not os.path.exists(ref):
+            die("reference image not found: %s" % ref)
+        if not os.path.exists(shot):
+            die("shot image not found: %s (先执行 ref-replicate shot 或 live screenshot)" % shot)
+        report = _rr_selfcheck(ref, shot, out)
+        with open(state["artifacts"]["report"], "w", encoding="utf-8") as f:
+            json.dump(report, f, ensure_ascii=False, indent=2)
+        print("selfcheck board: %s" % report["board"])
+        print(json.dumps(report, ensure_ascii=False, indent=2))
+        return
+    if action == "report":
+        print("delivery report for '%s'" % state["name"])
+        for k, v in state["artifacts"].items():
+            sz = os.path.getsize(v) if os.path.exists(v) else None
+            print("  %-10s %s %s" % (k, v, ("(%d bytes)" % sz) if sz else "(missing)"))
+        print("fix_round: %d" % state["fix_round"])
+        print("selfcheck board 请用 Read 查看; 交付物 = .drawio + 预览 PNG")
+        return
+    die("unknown ref-replicate action: %s" % action)
+
+
+# ---------------------------------------------------------------------------
 # main
 # ---------------------------------------------------------------------------
 
@@ -1445,6 +1685,36 @@ def main():
     q.set_defaults(func=cmd_live)
     q = subp.add_parser("close", help="close the MCP-launched draw.io window")
     q.set_defaults(func=cmd_live)
+
+    p = sub.add_parser("ref-replicate", help="reference-replicate workflow: 读图→spec→live→截图→自检→交付")
+    subp = p.add_subparsers(dest="action", required=True)
+    q = subp.add_parser("start", help="初始化一个复刻任务(参考图+可选数据源)")
+    q.add_argument("--ref", required=True, help="reference image path")
+    q.add_argument("--datasource", help="optional text datasource path")
+    q.add_argument("--name", help="task name (default: reference image basename)")
+    q.add_argument("--workdir", default=".")
+    q.set_defaults(func=cmd_ref_replicate)
+    q = subp.add_parser("status", help="显示当前阶段与产物")
+    q.add_argument("--workdir", default=".")
+    q.set_defaults(func=cmd_ref_replicate)
+    q = subp.add_parser("next", help="推进到下一阶段(--to 可指定跳转)")
+    q.add_argument("--to", help="target stage: read/spec/build/live/shot/selfcheck/fix/deliver")
+    q.add_argument("--workdir", default=".")
+    q.set_defaults(func=cmd_ref_replicate)
+    q = subp.add_parser("shot", help="带重试截取当前 draw.io 画布")
+    q.add_argument("-o", "--output", help="output PNG path")
+    q.add_argument("--retries", type=int, default=3)
+    q.add_argument("--workdir", default=".")
+    q.set_defaults(func=cmd_ref_replicate)
+    q = subp.add_parser("selfcheck", help="生成 参考图|当前画布 并排自检对比图 + JSON 报告")
+    q.add_argument("--ref", help="reference image (default: task ref)")
+    q.add_argument("--shot", help="live screenshot (default: task shot)")
+    q.add_argument("-o", "--output", help="output board path")
+    q.add_argument("--workdir", default=".")
+    q.set_defaults(func=cmd_ref_replicate)
+    q = subp.add_parser("report", help="交付摘要报告")
+    q.add_argument("--workdir", default=".")
+    q.set_defaults(func=cmd_ref_replicate)
 
     args = ap.parse_args()
     args.func(args)
