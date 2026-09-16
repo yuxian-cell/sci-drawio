@@ -1,0 +1,79 @@
+<mxfile host="app.diagrams.net" agent="sci-drawio" version="31.4.5" type="device">
+<diagram id="sci-drawio-1" name="JAK-STAT 信号机制图">
+<mxGraphModel dx="1100" dy="750" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0" adaptiveColors="auto">
+<root>
+<mxCell id="0"/>
+<mxCell id="1" parent="0"/>
+<mxCell id="mem" value="细胞膜" style="swimlane;startSize=26;fillColor=#F7F9FB;strokeColor=#C5D0DA;fontColor=#22303E;html=1;" vertex="1" parent="1">
+<mxGeometry x="470" y="100" width="220" height="216" as="geometry"/>
+</mxCell>
+<mxCell id="cyto" value="细胞质" style="swimlane;startSize=26;fillColor=#F7F9FB;strokeColor=#C5D0DA;fontColor=#22303E;html=1;" vertex="1" parent="1">
+<mxGeometry x="40" y="100" width="220" height="216" as="geometry"/>
+</mxCell>
+<mxCell id="nuc" value="细胞核" style="swimlane;startSize=26;fillColor=#F7F9FB;strokeColor=#C5D0DA;fontColor=#22303E;html=1;" vertex="1" parent="1">
+<mxGeometry x="720" y="100" width="220" height="216" as="geometry"/>
+</mxCell>
+<mxCell id="il6" value="IL-6" style="ellipse;whiteSpace=wrap;html=1;fillColor=#4C72B0;strokeColor=#2B4A7A;fontColor=#FFFFFF;" vertex="1" parent="1">
+<mxGeometry x="290" y="100" width="150" height="60" as="geometry"/>
+</mxCell>
+<mxCell id="rec" value="IL-6R/gp130" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DD8452;strokeColor=#8A5220;fontColor=#FFFFFF;" vertex="1" parent="mem">
+<mxGeometry x="20" y="46" width="150" height="60" as="geometry"/>
+</mxCell>
+<mxCell id="jak" value="JAK 激酶" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DD8452;strokeColor=#8A5220;fontColor=#FFFFFF;" vertex="1" parent="mem">
+<mxGeometry x="20" y="136" width="150" height="60" as="geometry"/>
+</mxCell>
+<mxCell id="stat3" value="STAT3" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#55A868;strokeColor=#2E6B3C;fontColor=#FFFFFF;" vertex="1" parent="cyto">
+<mxGeometry x="20" y="46" width="150" height="60" as="geometry"/>
+</mxCell>
+<mxCell id="pstat3" value="p-STAT3 二聚体" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#55A868;strokeColor=#2E6B3C;fontColor=#FFFFFF;" vertex="1" parent="cyto">
+<mxGeometry x="20" y="136" width="150" height="60" as="geometry"/>
+</mxCell>
+<mxCell id="tf" value="STAT3 入核" style="ellipse;whiteSpace=wrap;html=1;shape=doubleEllipse;fillColor=#C44E52;strokeColor=#7E2A2E;fontColor=#FFFFFF;" vertex="1" parent="nuc">
+<mxGeometry x="20" y="46" width="150" height="60" as="geometry"/>
+</mxCell>
+<mxCell id="gene" value="靶基因转录" style="shape=process;whiteSpace=wrap;html=1;fillColor=#8172B3;strokeColor=#4E4280;fontColor=#FFFFFF;" vertex="1" parent="nuc">
+<mxGeometry x="20" y="136" width="150" height="60" as="geometry"/>
+</mxCell>
+<mxCell id="e1" value="结合" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=oval;endFill=1;strokeColor=#4C72B0;strokeWidth=2;" edge="1" parent="1" source="il6" target="rec">
+<mxGeometry relative="1" as="geometry"/>
+</mxCell>
+<mxCell id="e2" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;endFill=1;strokeColor=#4C72B0;strokeWidth=2;" edge="1" parent="1" source="rec" target="jak">
+<mxGeometry relative="1" as="geometry"/>
+</mxCell>
+<mxCell id="e3" value="磷酸化" style="curved=1;html=1;endArrow=classic;endFill=1;strokeColor=#4C72B0;strokeWidth=2;" edge="1" parent="1" source="jak" target="stat3">
+<mxGeometry relative="1" as="geometry"/>
+</mxCell>
+<mxCell id="e4" value="二聚化" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=oval;endFill=1;strokeColor=#4C72B0;strokeWidth=2;" edge="1" parent="1" source="stat3" target="pstat3">
+<mxGeometry relative="1" as="geometry"/>
+</mxCell>
+<mxCell id="e5" value="转位" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=open;endFill=0;strokeColor=#4C72B0;strokeWidth=2;" edge="1" parent="1" source="pstat3" target="tf">
+<mxGeometry relative="1" as="geometry"/>
+</mxCell>
+<mxCell id="e6" value="促进" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;endFill=1;strokeColor=#4C72B0;strokeWidth=2;" edge="1" parent="1" source="tf" target="gene">
+<mxGeometry relative="1" as="geometry"/>
+</mxCell>
+<mxCell id="t_1001" value="JAK-STAT 信号通路（细胞区室）" style="text;html=1;align=center;fontSize=16;fontStyle=1;fontColor=#111111;" vertex="1" parent="1">
+<mxGeometry x="20" y="10" width="920" height="40" as="geometry"/>
+</mxCell>
+<mxCell id="leg_1002" value="图例 Legend" style="swimlane;startSize=24;fillColor=#F7F9FB;strokeColor=#C5D0DA;html=1;" vertex="1" parent="1">
+<mxGeometry x="20" y="396" width="260" height="144" as="geometry"/>
+</mxCell>
+<mxCell id="legi_1003" value="&lt;font color=&quot;#4C72B0&quot;&gt;──●&lt;/font&gt; 结合" style="text;html=1;align=left;fontSize=11;" vertex="1" parent="1">
+<mxGeometry x="32" y="430" width="236" height="22" as="geometry"/>
+</mxCell>
+<mxCell id="legi_1004" value="&lt;font color=&quot;#4C72B0&quot;&gt;──►&lt;/font&gt; 激活/磷酸化" style="text;html=1;align=left;fontSize=11;" vertex="1" parent="1">
+<mxGeometry x="32" y="456" width="236" height="22" as="geometry"/>
+</mxCell>
+<mxCell id="legi_1005" value="&lt;font color=&quot;#4C72B0&quot;&gt;──▷&lt;/font&gt; 转位" style="text;html=1;align=left;fontSize=11;" vertex="1" parent="1">
+<mxGeometry x="32" y="482" width="236" height="22" as="geometry"/>
+</mxCell>
+<mxCell id="legi_1006" value="&lt;font color=&quot;#4C72B0&quot;&gt;──■&lt;/font&gt; 生成" style="text;html=1;align=left;fontSize=11;" vertex="1" parent="1">
+<mxGeometry x="32" y="508" width="236" height="22" as="geometry"/>
+</mxCell>
+<mxCell id="note_1007" value="注：gp130 与 IL-6R 组成受体复合物；JAK 磷酸化 STAT3 的 Tyr705 位点。" style="text;html=1;align=left;fontSize=11;fontStyle=2;fontColor=#666666;" vertex="1" parent="1">
+<mxGeometry x="20" y="560" width="360" height="30" as="geometry"/>
+</mxCell>
+</root>
+</mxGraphModel>
+</diagram>
+</mxfile>

@@ -1,0 +1,76 @@
+<mxfile host="app.diagrams.net" agent="sci-drawio" version="31.4.5" type="device">
+<diagram id="sci-drawio-1" name="qPCR 实验流程图">
+<mxGraphModel dx="1100" dy="750" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="938" math="0" shadow="0" adaptiveColors="auto">
+<root>
+<mxCell id="0"/>
+<mxCell id="1" parent="0"/>
+<mxCell id="start" value="样本采集" style="ellipse;whiteSpace=wrap;html=1;shape=doubleEllipse;fillColor=#4C72B0;strokeColor=#2B4A7A;fontColor=#FFFFFF;" vertex="1" parent="1">
+<mxGeometry x="40" y="100" width="150" height="60" as="geometry"/>
+</mxCell>
+<mxCell id="rna" value="RNA 提取" style="shape=process;whiteSpace=wrap;html=1;fillColor=#4C72B0;strokeColor=#2B4A7A;fontColor=#FFFFFF;" vertex="1" parent="1">
+<mxGeometry x="40" y="190" width="150" height="60" as="geometry"/>
+</mxCell>
+<mxCell id="qc" value="质检合格？" style="rhombus;whiteSpace=wrap;html=1;fillColor=#C44E52;strokeColor=#7E2A2E;fontColor=#FFFFFF;" vertex="1" parent="1">
+<mxGeometry x="40" y="280" width="150" height="60" as="geometry"/>
+</mxCell>
+<mxCell id="cdna" value="逆转录 cDNA" style="shape=process;whiteSpace=wrap;html=1;fillColor=#DD8452;strokeColor=#8A5220;fontColor=#FFFFFF;" vertex="1" parent="1">
+<mxGeometry x="40" y="370" width="150" height="60" as="geometry"/>
+</mxCell>
+<mxCell id="qpcr" value="qPCR 扩增" style="shape=process;whiteSpace=wrap;html=1;fillColor=#55A868;strokeColor=#2E6B3C;fontColor=#FFFFFF;" vertex="1" parent="1">
+<mxGeometry x="40" y="460" width="150" height="60" as="geometry"/>
+</mxCell>
+<mxCell id="stat" value="ΔΔCt 统计分析" style="shape=hexagon;whiteSpace=wrap;html=1;perimeter=hexagonPerimeter2;fillColor=#55A868;strokeColor=#2E6B3C;fontColor=#FFFFFF;" vertex="1" parent="1">
+<mxGeometry x="40" y="550" width="150" height="60" as="geometry"/>
+</mxCell>
+<mxCell id="end" value="结果报告" style="ellipse;whiteSpace=wrap;html=1;shape=doubleEllipse;fillColor=#8172B3;strokeColor=#4E4280;fontColor=#FFFFFF;" vertex="1" parent="1">
+<mxGeometry x="40" y="640" width="150" height="60" as="geometry"/>
+</mxCell>
+<mxCell id="retry" value="重新提取" style="shape=note;whiteSpace=wrap;html=1;size=14;fillColor=#EAF0F6;strokeColor=#8FA3B8;fontColor=#22303E;" vertex="1" parent="1">
+<mxGeometry x="220" y="370" width="150" height="60" as="geometry"/>
+</mxCell>
+<mxCell id="e1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=none;strokeColor=#4C72B0;strokeWidth=2;" edge="1" parent="1" source="start" target="rna">
+<mxGeometry relative="1" as="geometry"/>
+</mxCell>
+<mxCell id="e2" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=none;strokeColor=#4C72B0;strokeWidth=2;" edge="1" parent="1" source="rna" target="qc">
+<mxGeometry relative="1" as="geometry"/>
+</mxCell>
+<mxCell id="e3" value="是" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;endFill=1;strokeColor=#4C72B0;strokeWidth=2;" edge="1" parent="1" source="qc" target="cdna">
+<mxGeometry relative="1" as="geometry"/>
+</mxCell>
+<mxCell id="e4" value="否" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;endFill=1;strokeColor=#C44E52;strokeWidth=2;" edge="1" parent="1" source="qc" target="retry">
+<mxGeometry relative="1" as="geometry"/>
+</mxCell>
+<mxCell id="e5" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;endFill=1;dashed=1;strokeColor=#C44E52;strokeWidth=2;" edge="1" parent="1" source="retry" target="rna">
+<mxGeometry relative="1" as="geometry"/>
+</mxCell>
+<mxCell id="e6" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=none;strokeColor=#4C72B0;strokeWidth=2;" edge="1" parent="1" source="cdna" target="qpcr">
+<mxGeometry relative="1" as="geometry"/>
+</mxCell>
+<mxCell id="e7" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=none;strokeColor=#4C72B0;strokeWidth=2;" edge="1" parent="1" source="qpcr" target="stat">
+<mxGeometry relative="1" as="geometry"/>
+</mxCell>
+<mxCell id="e8" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;endFill=1;strokeColor=#4C72B0;strokeWidth=2;" edge="1" parent="1" source="stat" target="end">
+<mxGeometry relative="1" as="geometry"/>
+</mxCell>
+<mxCell id="t_1001" value="qPCR 基因表达检测实验流程" style="text;html=1;align=center;fontSize=16;fontStyle=1;fontColor=#111111;" vertex="1" parent="1">
+<mxGeometry x="40" y="10" width="400" height="40" as="geometry"/>
+</mxCell>
+<mxCell id="leg_1002" value="图例 Legend" style="swimlane;startSize=24;fillColor=#F7F9FB;strokeColor=#C5D0DA;html=1;" vertex="1" parent="1">
+<mxGeometry x="40" y="780" width="260" height="118" as="geometry"/>
+</mxCell>
+<mxCell id="legi_1003" value="&lt;font color=&quot;#4C72B0&quot;&gt;──&lt;/font&gt; 流程步骤" style="text;html=1;align=left;fontSize=11;" vertex="1" parent="1">
+<mxGeometry x="52" y="814" width="236" height="22" as="geometry"/>
+</mxCell>
+<mxCell id="legi_1004" value="&lt;font color=&quot;#4C72B0&quot;&gt;──►&lt;/font&gt; 激活/通过" style="text;html=1;align=left;fontSize=11;" vertex="1" parent="1">
+<mxGeometry x="52" y="840" width="236" height="22" as="geometry"/>
+</mxCell>
+<mxCell id="legi_1005" value="&lt;font color=&quot;#4C72B0&quot;&gt;┄┄►&lt;/font&gt; 回退(虚线)" style="text;html=1;align=left;fontSize=11;" vertex="1" parent="1">
+<mxGeometry x="52" y="866" width="236" height="22" as="geometry"/>
+</mxCell>
+<mxCell id="note_1006" value="注：质检不合格样本重新提取 RNA；每样本设 3 个技术重复。" style="text;html=1;align=left;fontSize=11;fontStyle=2;fontColor=#666666;" vertex="1" parent="1">
+<mxGeometry x="40" y="918" width="360" height="30" as="geometry"/>
+</mxCell>
+</root>
+</mxGraphModel>
+</diagram>
+</mxfile>

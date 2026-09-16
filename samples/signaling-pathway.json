@@ -1,0 +1,43 @@
+{
+  "name": "MAPK Signaling Pathway",
+  "type": "mechanism",
+  "theme": "nature",
+  "layout": "auto",
+  "title": "EGFR–RAS–MAPK 信号通路机制图",
+  "nodes": [
+    {"id": "egf", "label": "EGF 配体", "shape": "ellipse", "rank": 0, "tone": "alt2"},
+    {"id": "egfr", "label": "EGFR 受体", "shape": "rounded", "rank": 1, "tone": "default"},
+    {"id": "grb2", "label": "GRB2 接头蛋白", "shape": "rounded", "rank": 2, "tone": "muted"},
+    {"id": "sos", "label": "SOS 鸟苷酸交换因子", "shape": "rounded", "rank": 2, "tone": "muted"},
+    {"id": "ras", "label": "RAS-GTP", "shape": "rounded", "rank": 3, "tone": "alt"},
+    {"id": "raf", "label": "RAF 激酶", "shape": "rounded", "rank": 4, "tone": "default"},
+    {"id": "mek", "label": "MEK1/2", "shape": "rounded", "rank": 5, "tone": "default"},
+    {"id": "erk", "label": "ERK1/2", "shape": "rounded", "rank": 6, "tone": "default"},
+    {"id": "nucleus", "label": "细胞核", "shape": "rectangle", "rank": 7, "tone": "muted"},
+    {"id": "gene", "label": "靶基因转录", "shape": "rhombus", "rank": 8, "tone": "alt3"},
+    {"id": "pten", "label": "PTEN 磷酸酶", "shape": "hexagon", "rank": 3, "tone": "alt4"},
+    {"id": "egfr_deg", "label": "受体降解", "shape": "note", "rank": 1, "tone": "alt5"}
+  ],
+  "edges": [
+    {"id": "e1", "from": "egf", "to": "egfr", "label": "结合", "arrow": "association"},
+    {"id": "e2", "from": "egfr", "to": "grb2", "label": "磷酸化招募", "arrow": "activation"},
+    {"id": "e3", "from": "grb2", "to": "sos", "label": "结合", "arrow": "association"},
+    {"id": "e4", "from": "sos", "to": "ras", "label": "激活", "arrow": "activation"},
+    {"id": "e5", "from": "ras", "to": "raf", "label": "激活", "arrow": "activation"},
+    {"id": "e6", "from": "raf", "to": "mek", "label": "磷酸化激活", "arrow": "activation"},
+    {"id": "e7", "from": "mek", "to": "erk", "label": "磷酸化激活", "arrow": "activation"},
+    {"id": "e8", "from": "erk", "to": "nucleus", "label": "入核转位", "arrow": "translocation"},
+    {"id": "e9", "from": "nucleus", "to": "gene", "label": "促进", "arrow": "activation"},
+    {"id": "e10", "from": "pten", "to": "ras", "label": "负调控", "arrow": "inhibition", "dashed": true},
+    {"id": "e11", "from": "egfr_deg", "to": "egfr", "label": "内化降解", "arrow": "inhibition", "dashed": true}
+  ],
+  "legend": [
+    {"label": "直接激活", "arrow": "activation"},
+    {"label": "抑制", "arrow": "inhibition", "dashed": true},
+    {"label": "转位/转运", "arrow": "translocation"},
+    {"label": "结合", "arrow": "association"}
+  ],
+  "notes": [
+    {"text": "注：PTEN 通过去磷酸化 PIP3 间接抑制 RAS 通路（虚线表示间接调控）。"}
+  ]
+}

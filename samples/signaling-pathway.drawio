@@ -1,0 +1,100 @@
+<mxfile host="app.diagrams.net" agent="sci-drawio" version="31.4.5" type="device">
+<diagram id="sci-drawio-1" name="MAPK Signaling Pathway">
+<mxGraphModel dx="1100" dy="750" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="1324" math="0" shadow="0" adaptiveColors="auto">
+<root>
+<mxCell id="0"/>
+<mxCell id="1" parent="0"/>
+<mxCell id="egf" value="EGF 配体" style="ellipse;whiteSpace=wrap;html=1;fillColor=#55A868;strokeColor=#2E6B3C;fontColor=#FFFFFF;" vertex="1" parent="1">
+<mxGeometry x="40" y="100" width="150" height="60" as="geometry"/>
+</mxCell>
+<mxCell id="egfr" value="EGFR 受体" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#4C72B0;strokeColor=#2B4A7A;fontColor=#FFFFFF;" vertex="1" parent="1">
+<mxGeometry x="40" y="280" width="150" height="60" as="geometry"/>
+</mxCell>
+<mxCell id="grb2" value="GRB2 接头蛋白" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EAF0F6;strokeColor=#8FA3B8;fontColor=#22303E;" vertex="1" parent="1">
+<mxGeometry x="40" y="370" width="150" height="60" as="geometry"/>
+</mxCell>
+<mxCell id="sos" value="SOS 鸟苷酸交换因子" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EAF0F6;strokeColor=#8FA3B8;fontColor=#22303E;" vertex="1" parent="1">
+<mxGeometry x="40" y="460" width="150" height="60" as="geometry"/>
+</mxCell>
+<mxCell id="ras" value="RAS-GTP" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DD8452;strokeColor=#8A5220;fontColor=#FFFFFF;" vertex="1" parent="1">
+<mxGeometry x="40" y="550" width="150" height="60" as="geometry"/>
+</mxCell>
+<mxCell id="raf" value="RAF 激酶" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#4C72B0;strokeColor=#2B4A7A;fontColor=#FFFFFF;" vertex="1" parent="1">
+<mxGeometry x="40" y="640" width="150" height="60" as="geometry"/>
+</mxCell>
+<mxCell id="mek" value="MEK1/2" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#4C72B0;strokeColor=#2B4A7A;fontColor=#FFFFFF;" vertex="1" parent="1">
+<mxGeometry x="40" y="730" width="150" height="60" as="geometry"/>
+</mxCell>
+<mxCell id="erk" value="ERK1/2" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#4C72B0;strokeColor=#2B4A7A;fontColor=#FFFFFF;" vertex="1" parent="1">
+<mxGeometry x="40" y="820" width="150" height="60" as="geometry"/>
+</mxCell>
+<mxCell id="nucleus" value="细胞核" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EAF0F6;strokeColor=#8FA3B8;fontColor=#22303E;" vertex="1" parent="1">
+<mxGeometry x="40" y="910" width="150" height="60" as="geometry"/>
+</mxCell>
+<mxCell id="gene" value="靶基因转录" style="rhombus;whiteSpace=wrap;html=1;fillColor=#C44E52;strokeColor=#7E2A2E;fontColor=#FFFFFF;" vertex="1" parent="1">
+<mxGeometry x="40" y="1000" width="150" height="60" as="geometry"/>
+</mxCell>
+<mxCell id="pten" value="PTEN 磷酸酶" style="shape=hexagon;whiteSpace=wrap;html=1;perimeter=hexagonPerimeter2;fillColor=#8172B3;strokeColor=#4E4280;fontColor=#FFFFFF;" vertex="1" parent="1">
+<mxGeometry x="220" y="370" width="150" height="60" as="geometry"/>
+</mxCell>
+<mxCell id="egfr_deg" value="受体降解" style="shape=note;whiteSpace=wrap;html=1;size=14;fillColor=#937860;strokeColor=#5E4A38;fontColor=#FFFFFF;" vertex="1" parent="1">
+<mxGeometry x="40" y="190" width="150" height="60" as="geometry"/>
+</mxCell>
+<mxCell id="e1" value="结合" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=oval;endFill=1;strokeColor=#4C72B0;strokeWidth=2;" edge="1" parent="1" source="egf" target="egfr">
+<mxGeometry relative="1" as="geometry"/>
+</mxCell>
+<mxCell id="e2" value="磷酸化招募" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;endFill=1;strokeColor=#4C72B0;strokeWidth=2;" edge="1" parent="1" source="egfr" target="grb2">
+<mxGeometry relative="1" as="geometry"/>
+</mxCell>
+<mxCell id="e3" value="结合" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=oval;endFill=1;strokeColor=#4C72B0;strokeWidth=2;" edge="1" parent="1" source="grb2" target="sos">
+<mxGeometry relative="1" as="geometry"/>
+</mxCell>
+<mxCell id="e4" value="激活" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;endFill=1;strokeColor=#4C72B0;strokeWidth=2;" edge="1" parent="1" source="sos" target="ras">
+<mxGeometry relative="1" as="geometry"/>
+</mxCell>
+<mxCell id="e5" value="激活" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;endFill=1;strokeColor=#4C72B0;strokeWidth=2;" edge="1" parent="1" source="ras" target="raf">
+<mxGeometry relative="1" as="geometry"/>
+</mxCell>
+<mxCell id="e6" value="磷酸化激活" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;endFill=1;strokeColor=#4C72B0;strokeWidth=2;" edge="1" parent="1" source="raf" target="mek">
+<mxGeometry relative="1" as="geometry"/>
+</mxCell>
+<mxCell id="e7" value="磷酸化激活" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;endFill=1;strokeColor=#4C72B0;strokeWidth=2;" edge="1" parent="1" source="mek" target="erk">
+<mxGeometry relative="1" as="geometry"/>
+</mxCell>
+<mxCell id="e8" value="入核转位" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=open;endFill=0;strokeColor=#4C72B0;strokeWidth=2;" edge="1" parent="1" source="erk" target="nucleus">
+<mxGeometry relative="1" as="geometry"/>
+</mxCell>
+<mxCell id="e9" value="促进" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;endFill=1;strokeColor=#4C72B0;strokeWidth=2;" edge="1" parent="1" source="nucleus" target="gene">
+<mxGeometry relative="1" as="geometry"/>
+</mxCell>
+<mxCell id="e10" value="负调控" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=ERone;endFill=0;dashed=1;strokeColor=#4C72B0;strokeWidth=2;" edge="1" parent="1" source="pten" target="ras">
+<mxGeometry relative="1" as="geometry"/>
+</mxCell>
+<mxCell id="e11" value="内化降解" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=ERone;endFill=0;dashed=1;strokeColor=#4C72B0;strokeWidth=2;" edge="1" parent="1" source="egfr_deg" target="egfr">
+<mxGeometry relative="1" as="geometry"/>
+</mxCell>
+<mxCell id="t_1001" value="EGFR–RAS–MAPK 信号通路机制图" style="text;html=1;align=center;fontSize=16;fontStyle=1;fontColor=#111111;" vertex="1" parent="1">
+<mxGeometry x="40" y="10" width="400" height="40" as="geometry"/>
+</mxCell>
+<mxCell id="leg_1002" value="图例 Legend" style="swimlane;startSize=24;fillColor=#F7F9FB;strokeColor=#C5D0DA;html=1;" vertex="1" parent="1">
+<mxGeometry x="40" y="1140" width="260" height="144" as="geometry"/>
+</mxCell>
+<mxCell id="legi_1003" value="&lt;font color=&quot;#4C72B0&quot;&gt;──►&lt;/font&gt; 直接激活" style="text;html=1;align=left;fontSize=11;" vertex="1" parent="1">
+<mxGeometry x="52" y="1174" width="236" height="22" as="geometry"/>
+</mxCell>
+<mxCell id="legi_1004" value="&lt;font color=&quot;#4C72B0&quot;&gt;┄┄⊣&lt;/font&gt; 抑制" style="text;html=1;align=left;fontSize=11;" vertex="1" parent="1">
+<mxGeometry x="52" y="1200" width="236" height="22" as="geometry"/>
+</mxCell>
+<mxCell id="legi_1005" value="&lt;font color=&quot;#4C72B0&quot;&gt;──▷&lt;/font&gt; 转位/转运" style="text;html=1;align=left;fontSize=11;" vertex="1" parent="1">
+<mxGeometry x="52" y="1226" width="236" height="22" as="geometry"/>
+</mxCell>
+<mxCell id="legi_1006" value="&lt;font color=&quot;#4C72B0&quot;&gt;──●&lt;/font&gt; 结合" style="text;html=1;align=left;fontSize=11;" vertex="1" parent="1">
+<mxGeometry x="52" y="1252" width="236" height="22" as="geometry"/>
+</mxCell>
+<mxCell id="note_1007" value="注：PTEN 通过去磷酸化 PIP3 间接抑制 RAS 通路（虚线表示间接调控）。" style="text;html=1;align=left;fontSize=11;fontStyle=2;fontColor=#666666;" vertex="1" parent="1">
+<mxGeometry x="40" y="1304" width="360" height="30" as="geometry"/>
+</mxCell>
+</root>
+</mxGraphModel>
+</diagram>
+</mxfile>

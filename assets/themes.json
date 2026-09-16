@@ -1,0 +1,15 @@
+{
+  "paper": {
+    "bg": "#FFFFFF",
+    "default": {"fill": "#37474F", "stroke": "#263238", "font": "#FFFFFF"},
+    "alt":     {"fill": "#78909C", "stroke": "#455A64", "font": "#FFFFFF"},
+    "alt2":    {"fill": "#90A4AE", "stroke": "#546E7A", "font": "#FFFFFF"},
+    "alt3":    {"fill": "#ECEFF1", "stroke": "#455A64", "font": "#263238"},
+    "alt4":    {"fill": "#CFD8DC", "stroke": "#455A64", "font": "#263238"},
+    "alt5":    {"fill": "#B0BEC5", "stroke": "#37474F", "font": "#263238"},
+    "muted":   {"fill": "#FAFAFA", "stroke": "#B0BEC5", "font": "#37474F"},
+    "container": {"fill": "#F5F7F8", "stroke": "#B0BEC5", "font": "#263238"},
+    "edge": "#37474F",
+    "edge_alt": "#90A4AE"
+  }
+}

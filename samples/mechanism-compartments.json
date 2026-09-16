@@ -1,0 +1,36 @@
+{
+  "name": "JAK-STAT 信号机制图",
+  "type": "mechanism",
+  "theme": "nature",
+  "title": "JAK-STAT 信号通路（细胞区室）",
+  "layout": "auto",
+  "containers": [
+    {"id": "mem", "label": "细胞膜", "startSize": 26},
+    {"id": "cyto", "label": "细胞质", "startSize": 26},
+    {"id": "nuc", "label": "细胞核", "startSize": 26}
+  ],
+  "nodes": [
+    {"id": "il6", "label": "IL-6", "shape": "ellipse", "tone": "default", "rank": 0},
+    {"id": "rec", "label": "IL-6R/gp130", "shape": "rounded", "tone": "alt", "container": "mem", "rank": 0},
+    {"id": "jak", "label": "JAK 激酶", "shape": "rounded", "tone": "alt", "container": "mem", "rank": 1},
+    {"id": "stat3", "label": "STAT3", "shape": "rounded", "tone": "alt2", "container": "cyto", "rank": 0},
+    {"id": "pstat3", "label": "p-STAT3 二聚体", "shape": "rounded", "tone": "alt2", "container": "cyto", "rank": 1},
+    {"id": "tf", "label": "STAT3 入核", "shape": "double_ellipse", "tone": "alt3", "container": "nuc", "rank": 0},
+    {"id": "gene", "label": "靶基因转录", "shape": "process", "tone": "alt4", "container": "nuc", "rank": 1}
+  ],
+  "edges": [
+    {"id": "e1", "from": "il6", "to": "rec", "label": "结合", "arrow": "association"},
+    {"id": "e2", "from": "rec", "to": "jak", "arrow": "activation"},
+    {"id": "e3", "from": "jak", "to": "stat3", "label": "磷酸化", "arrow": "activation", "style": "curved"},
+    {"id": "e4", "from": "stat3", "to": "pstat3", "label": "二聚化", "arrow": "association"},
+    {"id": "e5", "from": "pstat3", "to": "tf", "label": "转位", "arrow": "translocation"},
+    {"id": "e6", "from": "tf", "to": "gene", "label": "促进", "arrow": "production"}
+  ],
+  "legend": [
+    {"label": "结合", "arrow": "association"},
+    {"label": "激活/磷酸化", "arrow": "activation"},
+    {"label": "转位", "arrow": "translocation"},
+    {"label": "生成", "arrow": "production"}
+  ],
+  "notes": [{"text": "注：gp130 与 IL-6R 组成受体复合物；JAK 磷酸化 STAT3 的 Tyr705 位点。"}]
+}

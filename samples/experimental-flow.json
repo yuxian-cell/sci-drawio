@@ -1,0 +1,33 @@
+{
+  "name": "qPCR 实验流程图",
+  "type": "flow",
+  "theme": "nature",
+  "title": "qPCR 基因表达检测实验流程",
+  "layout": "auto",
+  "nodes": [
+    {"id": "start", "label": "样本采集", "shape": "double_ellipse", "tone": "default"},
+    {"id": "rna", "label": "RNA 提取", "shape": "process", "tone": "default"},
+    {"id": "qc", "label": "质检合格？", "shape": "rhombus", "tone": "alt3"},
+    {"id": "cdna", "label": "逆转录 cDNA", "shape": "process", "tone": "alt"},
+    {"id": "qpcr", "label": "qPCR 扩增", "shape": "process", "tone": "alt2"},
+    {"id": "stat", "label": "ΔΔCt 统计分析", "shape": "hexagon", "tone": "alt2"},
+    {"id": "end", "label": "结果报告", "shape": "double_ellipse", "tone": "alt4"},
+    {"id": "retry", "label": "重新提取", "shape": "note", "tone": "muted"}
+  ],
+  "edges": [
+    {"id": "e1", "from": "start", "to": "rna", "arrow": "none"},
+    {"id": "e2", "from": "rna", "to": "qc", "arrow": "none"},
+    {"id": "e3", "from": "qc", "to": "cdna", "label": "是", "arrow": "activation"},
+    {"id": "e4", "from": "qc", "to": "retry", "label": "否", "arrow": "activation", "color": "#C44E52"},
+    {"id": "e5", "from": "retry", "to": "rna", "arrow": "activation", "dashed": true, "color": "#C44E52"},
+    {"id": "e6", "from": "cdna", "to": "qpcr", "arrow": "none"},
+    {"id": "e7", "from": "qpcr", "to": "stat", "arrow": "none"},
+    {"id": "e8", "from": "stat", "to": "end", "arrow": "production"}
+  ],
+  "legend": [
+    {"label": "流程步骤", "arrow": "none"},
+    {"label": "激活/通过", "arrow": "activation"},
+    {"label": "回退(虚线)", "arrow": "activation", "dashed": true}
+  ],
+  "notes": [{"text": "注：质检不合格样本重新提取 RNA；每样本设 3 个技术重复。"}]
+}
